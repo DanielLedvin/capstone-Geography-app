@@ -6,10 +6,6 @@ import json
 import visualizations as viz
 
 
-# --- To Run in Terminal ---
-# streamlit run interactive_map/app_formatted.py
-
-
 # --- Page Configuration ---
 st.set_page_config(layout='wide',
                    page_title='Sub-Saharan Crop Forecast Viewer')
