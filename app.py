@@ -15,20 +15,6 @@ st.title('Sub-Saharan Africa Crop Forecast Viewer')
 # --- Data Loading Function ---
 @st.cache_data
 def load_data():
-    '''
-    Function:
-    - Reads in cape_eo and crop production datasets as well as shapefile for mapping
-    - Formats DataFrames for use in the interactive map
-
-    Return:
-    - cape_eo = Cape EO observations
-    - viewer_yield = Yield values for Maize. columns are only fnid, year, and yield
-    - gdf = Shapefile for mapping Sub-Saharan Africa
-
-    Note:
-    - cape_eo predictors are the same for the XGB and LR models, so I arbitrarily chose
-        the rows from the XGB model not to have repeating predictor values
-    '''
     # Read in files from 'data/' folder
     cape_eo = pd.read_parquet('./data/cape_eo_formatted.parquet')
     viewer_yield = pd.read_parquet('./data/viewer_yield.parquet')
@@ -62,13 +48,20 @@ if page == "Yield & Climate":
     st.markdown('### Click a region to view EO and crop data')
 
     m = viz.build_base_map(geojson)
-    map_output = st_folium(m, width=900, height=600)
+    map_output = st_folium(
+        m,
+        width=900,
+        height=600,
+        key="yield_map",
+        returned_objects=["last_object_clicked"]
+    )
 
     fnid = None
     
     # --- Display Data ---
-    if map_output and map_output.get('last_active_drawing'):
-        fnid = map_output['last_active_drawing']['properties']['fnid']
+    if map_output.get('last_object_clicked'):
+        clicked = map_output['last_object_clicked']
+        fnid = clicked['properties']['fnid']
 
         # Use gdf for lookup
         region_row = gdf[gdf['fnid'] == fnid].iloc[0]

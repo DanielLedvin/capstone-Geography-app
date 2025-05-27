@@ -5,7 +5,6 @@ import folium
 import streamlit as st
 
 
-@st.cache_resource
 def build_base_map(geojson):
 
     m = folium.Map(location=[0, 20], zoom_start=3)
