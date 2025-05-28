@@ -48,20 +48,13 @@ if page == "Yield & Climate":
     st.markdown('### Click a region to view EO and crop data')
 
     m = viz.build_base_map(geojson)
-    map_output = st_folium(
-        m,
-        width=900,
-        height=600,
-        key="yield_map",
-        returned_objects=["last_object_clicked"]
-    )
+    map_output = st_folium(m, width=900, height=600)
 
     fnid = None
     
     # --- Display Data ---
-    if map_output.get('last_object_clicked'):
-        clicked = map_output['last_object_clicked']
-        fnid = clicked['properties']['fnid']
+    if map_output and map_output.get('last_active_drawing'):
+        fnid = map_output['last_active_drawing']['properties']['fnid']
 
         # Use gdf for lookup
         region_row = gdf[gdf['fnid'] == fnid].iloc[0]
